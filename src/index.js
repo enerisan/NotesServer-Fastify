@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 // import fastify & mongoose
 const fastify = require('fastify');
 const mongoose = require('mongoose');
@@ -6,12 +8,21 @@ const noteRootes = require('./routes/noteRoutes');
 // initialized Fastify App
 const app = fastify();
 
+
 // connect fastify to mongoose
-try {
-  mongoose.connect('mongodb://localhost:27017/notes_db');
-} catch (e) {
-  console.error(e);
+async function connectDB() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("Connected to MongoDB Atlas");
+    } catch (e) {
+        console.error("Error connecting to MongoDB:", e);
+        process.exit(1);
+    }
 }
+
+connectDB();
+
+//load routes
 
 noteRootes(app);
 

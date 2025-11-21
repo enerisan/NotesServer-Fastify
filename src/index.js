@@ -4,12 +4,22 @@ require('dotenv').config();
 const fastify = require('fastify');
 const mongoose = require('mongoose');
 const noteRootes = require('./routes/noteRoutes');
+const s3Routes = require('./routes/s3Routes')
+
 
 // initialized Fastify App
-const app = fastify();
+const app = fastify({
+    bodyLimit: 1024 * 1024 * 50 // 50MB for big files
+});
 
 
-// connect fastify to mongoose
+
+// Registre multipart
+app.register(require('@fastify/multipart'));
+
+
+
+// connect fastify to Mongo
 async function connectDB() {
     try {
         await mongoose.connect(process.env.MONGO_URI);
@@ -25,6 +35,7 @@ connectDB();
 //load routes
 
 noteRootes(app);
+s3Routes(app);
 
 // handle root route
 app.get('/', (request, reply) => {

@@ -11,6 +11,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@fastify/multipart": "^9.3.0",
+    "aws-sdk": "^2.1692.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.2",
     "mongoose": "^8.20.0"

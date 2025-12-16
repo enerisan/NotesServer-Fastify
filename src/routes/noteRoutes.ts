@@ -1,6 +1,7 @@
-const notesController = require ('../controllers/notesController')
+import { FastifyInstance } from "fastify"
+const notesController = require('../controllers/notesController')
 
-module.exports = (app) => {
+export default function noteRoutes(app: FastifyInstance) {
     // create a note
     app.post('/api/notes', notesController.create);
 
@@ -15,4 +16,5 @@ module.exports = (app) => {
 
     //delete a note
     app.delete('/api/notes/:id', notesController.delete);
+
 }

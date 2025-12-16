@@ -1,28 +1,33 @@
-require('dotenv').config();
-
 // import fastify & mongoose
-const fastify = require('fastify');
-const mongoose = require('mongoose');
-const noteRootes = require('./routes/noteRoutes');
-const s3Routes = require('./routes/s3Routes')
+import fastify, { FastifyInstance } from 'fastify';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes'
+import noteRoutes from './routes/noteRoutes';
+import s3Routes from './routes/s3Routes';
+import multipart from '@fastify/multipart';
+
+
+dotenv.config();
+
 
 
 // initialized Fastify App
-const app = fastify({
+const app: FastifyInstance = fastify({
     bodyLimit: 1024 * 1024 * 50 // 50MB for big files
 });
 
 
 
 // Registre multipart
-app.register(require('@fastify/multipart'));
+app.register(multipart);
 
 
 
 // connect fastify to Mongo
 async function connectDB() {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI!);
         console.log("Connected to MongoDB Atlas");
     } catch (e) {
         console.error("Error connecting to MongoDB:", e);
@@ -33,9 +38,10 @@ async function connectDB() {
 connectDB();
 
 //load routes
-
-noteRootes(app);
+userRoutes(app);
+noteRoutes(app);
 s3Routes(app);
+
 
 // handle root route
 app.get('/', (request, reply) => {
